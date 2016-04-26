@@ -360,6 +360,7 @@ message LayerParameter {
   // for their implementation. These layers include an Engine type and
   // engine parameter for selecting the implementation.
   // The default for the engine is set by the ENGINE switch at compile-time.
+  //last added: TPPParameter: 145
   optional AccuracyParameter accuracy_param = 102;
   optional ArgMaxParameter argmax_param = 103;
   optional BatchNormParameter batch_norm_param = 139;
@@ -404,6 +405,7 @@ message LayerParameter {
   optional TanHParameter tanh_param = 127;
   optional ThresholdParameter threshold_param = 128;
   optional TileParameter tile_param = 138;
+  optional TPPParameter tpp_param = 145;
   optional WindowDataParameter window_data_param = 129;
 }
 
@@ -1210,6 +1212,22 @@ message SPPParameter {
   }
   optional uint32 pyramid_height = 1;
   optional PoolMethod pool = 2 [default = MAX]; // The pooling method
+  enum Engine {
+    DEFAULT = 0;
+    CAFFE = 1;
+    CUDNN = 2;
+  }
+  optional Engine engine = 6 [default = DEFAULT];
+}
+
+message TPPParameter {
+  enum PoolMethod {
+    MAX = 0;
+    AVE = 1;
+    STOCHASTIC = 2;
+  }
+  repeated uint32 pyramid_layer = 1;
+  optional PoolMethod pool = 2 [default = MAX];
   enum Engine {
     DEFAULT = 0;
     CAFFE = 1;
