@@ -287,6 +287,44 @@ BOOST_PYTHON_MODULE(_caffe) {
   bp::register_ptr_to_python<shared_ptr<Layer<Dtype> > >();
 
   bp::class_<LayerParameter>("LayerParameter", bp::no_init);
+  
+  bp::class_<SolverParameter, shared_ptr<SolverParameter> >("SolverParameter",
+    bp::no_init)
+    .add_property("base_lr", &SolverParameter::base_lr)
+    .add_property("momentum", &SolverParameter::momentum)
+    .add_property("gamma", &SolverParameter::gamma)
+    //.add_property("test_iter", &SolverParameter::test_iter)
+    .add_property("test_interval", &SolverParameter::test_interval)
+    .add_property("test_compute_loss", &SolverParameter::test_compute_loss)
+    .add_property("test_initialization", &SolverParameter::test_initialization)
+    .add_property("max_iter", &SolverParameter::max_iter)
+    .add_property("iter_size", &SolverParameter::iter_size)
+    .add_property("lr_policy", bp::make_function(&SolverParameter::lr_policy,
+        boost::python::return_value_policy<boost::python::copy_const_reference>()))
+    .add_property("display", &SolverParameter::display)
+    .add_property("power", &SolverParameter::power)
+    .add_property("average_loss", &SolverParameter::average_loss)
+    .add_property("weight_decay", &SolverParameter::weight_decay)
+    .add_property("stepsize", &SolverParameter::stepsize)
+    .add_property("regularization_type", bp::make_function(
+        &SolverParameter::regularization_type, 
+	boost::python::return_value_policy<boost::python::copy_const_reference>()))
+    //.add_property("stepvalue", bp::make_function(&SolverParameter::stepvalue,
+    //    boost::python::return_value_policy<boost::python::copy_const_reference>()))
+    .add_property("clip_gradients", &SolverParameter::clip_gradients)
+    .add_property("snapshot", &SolverParameter::snapshot)
+    .add_property("snapshot_prefix", bp::make_function(&SolverParameter::snapshot_prefix,
+        boost::python::return_value_policy<boost::python::copy_const_reference>()))
+    .add_property("snapshot_diff", &SolverParameter::snapshot_diff)
+    .add_property("device_id", &SolverParameter::device_id)
+    .add_property("type", bp::make_function(&SolverParameter::type,
+        boost::python::return_value_policy<boost::python::copy_const_reference>()))
+    .add_property("delta", &SolverParameter::delta)
+    .add_property("momentum2", &SolverParameter::momentum2)
+    .add_property("rms_decay", &SolverParameter::rms_decay)
+    .add_property("debug_info", &SolverParameter::debug_info)
+    .add_property("snapshot_after_train", &SolverParameter::snapshot_after_train);
+  bp::register_ptr_to_python<shared_ptr<SolverParameter> >();
 
   bp::class_<Solver<Dtype>, shared_ptr<Solver<Dtype> >, boost::noncopyable>(
     "Solver", bp::no_init)
@@ -294,6 +332,8 @@ BOOST_PYTHON_MODULE(_caffe) {
     .add_property("test_nets", bp::make_function(&Solver<Dtype>::test_nets,
           bp::return_internal_reference<>()))
     .add_property("iter", &Solver<Dtype>::iter)
+    .add_property("param", bp::make_function(&Solver<Dtype>::param,
+          bp::return_value_policy<bp::copy_const_reference>()))
     .def("solve", static_cast<void (Solver<Dtype>::*)(const char*)>(
           &Solver<Dtype>::Solve), SolveOverloads())
     .def("step", &Solver<Dtype>::Step)
