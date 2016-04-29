@@ -337,7 +337,7 @@ BOOST_PYTHON_MODULE(_caffe) {
     .add_property("rms_decay", &SolverParameter::rms_decay)
     .add_property("debug_info", &SolverParameter::debug_info)
     .add_property("snapshot_after_train", &SolverParameter::snapshot_after_train);
-  bp::register_ptr_to_python<shared_ptr<SolverParameter> >();
+  BP_REGISTER_SHARED_PTR_TO_PYTHON(SolverParameter);
 
   bp::class_<Solver<Dtype>, shared_ptr<Solver<Dtype> >, boost::noncopyable>(
     "Solver", bp::no_init)
