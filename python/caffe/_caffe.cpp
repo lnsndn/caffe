@@ -220,6 +220,16 @@ bp::object BlobVec_add_blob(bp::tuple args, bp::dict kwargs) {
   return bp::object();
 }
 
+vector<int> SolverParameter_TestIter(const SolverParameter& params)
+{
+  vector<int> out(params.test_iter_size());
+  for(int i = 0; i < params.test_iter_size(); ++i)
+  {
+    out[i] = params.test_iter(i);
+  }
+  return out;
+}
+
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(SolveOverloads, Solve, 0, 1);
 
 BOOST_PYTHON_MODULE(_caffe) {
@@ -336,7 +346,8 @@ BOOST_PYTHON_MODULE(_caffe) {
     .add_property("momentum2", &SolverParameter::momentum2)
     .add_property("rms_decay", &SolverParameter::rms_decay)
     .add_property("debug_info", &SolverParameter::debug_info)
-    .add_property("snapshot_after_train", &SolverParameter::snapshot_after_train);
+    .add_property("snapshot_after_train", &SolverParameter::snapshot_after_train)
+    .add_property("test_iter", &SolverParameter_TestIter);
   BP_REGISTER_SHARED_PTR_TO_PYTHON(SolverParameter);
 
   bp::class_<Solver<Dtype>, shared_ptr<Solver<Dtype> >, boost::noncopyable>(
