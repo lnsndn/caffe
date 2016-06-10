@@ -1,4 +1,11 @@
 ## General
+## PatRec 
+#build dirs
+build_cpu/
+build_deep-vis-tb/
+build_gpu/
+# some cmake stuff, no idea...
+cmake/Modules/FindOpenCV.cmake_bad
 
 # Compiled Object files
 *.slo
@@ -22,6 +29,7 @@
 
 # Compiled python
 *.pyc
+*.pyo
 
 # Compiled MATLAB
 *.mex*
