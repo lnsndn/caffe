@@ -10,7 +10,6 @@
 #include "caffe/util/benchmark.hpp"
 
 namespace caffe {
-
 template <typename Dtype>
 DataLayer<Dtype>::DataLayer(const LayerParameter& param)
   : BasePrefetchingDataLayer<Dtype>(param),
@@ -94,7 +93,6 @@ void DataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
       top_label[item_id] = datum.label();
     }
     trans_time += timer.MicroSeconds();
-
     reader_.free().push(const_cast<Datum*>(&datum));
   }
   timer.Stop();
