@@ -101,3 +101,8 @@ LOCK
 LOG*
 CURRENT
 MANIFEST-*
+
+# temporary directories
+jobs
+temp
+examples/*/*lmdb
