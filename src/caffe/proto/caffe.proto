@@ -562,10 +562,6 @@ message TransformationParameter {
   optional bool force_color = 6 [default = false];
   // Force the decoded image to have 1 color channels.
   optional bool force_gray = 7 [default = false];
-  // Specify minimum size of images before crop (used for scale augmentation). 
-  optional uint32 min_size = 13;
-  // Specify maximum size of images before crop (used for scale agumentation).
-  optional uint32 max_size = 14;
   // Resize policy
   optional ResizeParameter resize_param = 8;
   // Noise policy
