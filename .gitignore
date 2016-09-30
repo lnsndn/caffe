@@ -55,6 +55,9 @@ cmake/Modules/FindOpenCV.cmake_bad
 # PyCharm files
 .idea
 
+# Visual Studio Code files
+.vscode
+
 # OSX dir files
 .DS_Store
 
