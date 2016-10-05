@@ -1,0 +1,4 @@
+The file patrec_gpu_machines.txt contains the names for all GPU machines.
+If there is an additional machine added to the group, add a new line with the
+name of the machine. This way, the GPU architecture is automatically added
+at build time.
