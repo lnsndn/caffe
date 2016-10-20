@@ -16,7 +16,7 @@ void DropoutLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   DCHECK(threshold_ < 1.);
   scale_ = 1. / (1. - threshold_);
   uint_thres_ = static_cast<unsigned int>(UINT_MAX * threshold_);
-  if (this->phase_ == TEST) {
+  if (this->phase_ == TEST && this->layer_param_.dropout_param().dropout_ratio() > 0) {
     LOG(WARNING) << "!WARNING! Using dropout in test!";
   }
 }
