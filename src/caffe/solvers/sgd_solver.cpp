@@ -56,6 +56,17 @@ Dtype SGDSolver<Dtype>::GetLearningRate() {
     rate = this->param_.base_lr() * (Dtype(1.) /
         (Dtype(1.) + exp(-this->param_.gamma() * (Dtype(this->iter_) -
           Dtype(this->param_.stepsize())))));
+  } else if (lr_policy == "step_lr_pair") {
+    CHECK_EQ(this->param_.stepvalue_size(), this->param_.lrvalue_size())
+        << "LR-Policy step_lr_pair needs an equal amount of stepvalue "
+        << "and lrvalue";
+    if (this->current_step_ < this->param_.stepvalue_size() &&
+          this->iter_ >= this->param_.stepvalue(this->current_step_)) {
+      this->current_step_++;
+      LOG(INFO) << "Step-LR-Pair Status: Iteration " <<
+      this->iter_ << ", lr = " << this->param_.lrvalue(this->current_step_);
+    }
+    rate = this->param_.lrvalue(this->current_step_);
   } else {
     LOG(FATAL) << "Unknown learning rate policy: " << lr_policy;
   }
