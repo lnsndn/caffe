@@ -423,6 +423,7 @@ BOOST_PYTHON_MODULE(_caffe) {
     .def("__init__", bp::make_constructor(&Net_Init_Load))
     .def("_forward", &Net<Dtype>::ForwardFromTo)
     .def("_backward", &Net<Dtype>::BackwardFromTo)
+    .def("forward_backward", &Net<Dtype>::ForwardBackward)
     .def("reshape", &Net<Dtype>::Reshape)
     .def("clear_param_diffs", &Net<Dtype>::ClearParamDiffs)
     // The cast is to select a particular overload.
@@ -543,7 +544,9 @@ BOOST_PYTHON_MODULE(_caffe) {
     .def("snapshot", &Solver<Dtype>::Snapshot)
     .def("share_weights", &share_weights)
     .add_property("param", bp::make_function(&Solver<Dtype>::param,
-              bp::return_value_policy<bp::copy_const_reference>()));
+              bp::return_value_policy<bp::copy_const_reference>()))
+    .def("apply_update", &Solver<Dtype>::ApplyUpdate)
+    .def("share_trained_layers", &Solver<Dtype>::ShareTrainedLayers);
   BP_REGISTER_SHARED_PTR_TO_PYTHON(Solver<Dtype>);
 
   bp::class_<SGDSolver<Dtype>, bp::bases<Solver<Dtype> >,
