@@ -55,7 +55,7 @@ endfunction()
 # Usage:
 #   caffe_detect_installed_gpus(out_variable)
 function(caffe_detect_patrec_gpus out_variable)
-  if(NOT CUDA_gpu_detect_output)
+  #if(NOT CUDA_gpu_detect_output)
     set(__cufile ${PROJECT_BINARY_DIR}/detect_patrec_cuda_archs.cu)
 
     message(STATUS "Detecting GPUs for all PatRec machines...")
@@ -95,7 +95,7 @@ function(caffe_detect_patrec_gpus out_variable)
       string(REPLACE "2.1" "2.1(2.0)" __nvcc_out "${__nvcc_out}")
       set(CUDA_gpu_detect_output ${__nvcc_out} CACHE INTERNAL "Returned GPU architetures from caffe_detect_gpus tool" FORCE)
     endif()
-  endif()
+  #endif()
 
   if(NOT CUDA_gpu_detect_output)
     message(STATUS "Automatic GPU detection failed. Building for all known architectures.")
