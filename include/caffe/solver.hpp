@@ -93,10 +93,18 @@ class Solver {
    * @brief Returns the solver type.
    */
   virtual inline const char* type() const { return ""; }
+  // Make and applay the update value for the current iteration.
+  virtual void ApplyUpdate() = 0;
+  void ShareTrainedLayers() {
+    for (int test_net_id = 0;
+       test_net_id < test_nets_.size() && !requested_early_exit_;
+       ++test_net_id) {
+      CHECK_NOTNULL(test_nets_[test_net_id].get())->
+          ShareTrainedLayersWith(net_.get());
+    }
+  }
 
  protected:
-  // Make and apply the update value for the current iteration.
-  virtual void ApplyUpdate() = 0;
   string SnapshotFilename(const string extension);
   string SnapshotToBinaryProto();
   string SnapshotToHDF5();
