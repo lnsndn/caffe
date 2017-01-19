@@ -148,17 +148,6 @@ void TPPLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   LayerParameter concat_param;
   this->concat_layer_.reset(new ConcatLayer<Dtype>(concat_param));
   this->concat_layer_->SetUp(this->concat_bottom_vec_, top);
-
-  //---------------------------
-  //DEBUG STUFF!!!
-  this->split_layer_->SetShared(false);
-  for(int i = 0; i < this->pyramid_height_; ++i)
-  {
-      this->pooling_layers_[i]->SetShared(false);
-      this->flatten_layers_[i]->SetShared(false);
-  }
-  this->concat_layer_->SetShared(false);
-  //---------------------------
 }
 
 template <typename Dtype>
