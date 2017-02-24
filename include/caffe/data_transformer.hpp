@@ -1,6 +1,7 @@
 #ifndef CAFFE_DATA_TRANSFORMER_HPP
 #define CAFFE_DATA_TRANSFORMER_HPP
 
+#include <tuple>
 #include <vector>
 
 #include "caffe/blob.hpp"
@@ -98,6 +99,15 @@ class DataTransformer {
    *    Datum containing the data to be transformed.
    */
   vector<int> InferBlobShape(const Datum& datum);
+  /**
+   * @brief Infers the shape of transformed_blob will have when
+   *    the transformation is applied to the data.
+   *
+   * @param anno_datum
+   *    Datum containing the data and annotationto be transformed.
+   */
+  std::tuple<vector<int>, vector<int> > InferBlobShape(
+      const AnnotatedDatum& anno_datum);
   /**
    * @brief Infers the shape of transformed_blob will have when
    *    the transformation is applied to the data.
