@@ -617,19 +617,19 @@ vector<int> DataTransformer<Dtype>::InferBlobShape(const Datum& datum) {
 
 template<typename Dtype>
 std::tuple<vector<int>, vector<int> > DataTransformer<Dtype>::InferBlobShape(
-    const AnnotatedDatum& anno_datum) {
+    const MultilabelDatum& ml_datum) {
   // the data shape might be subject to change due to transformation,
   // but the annotation shape always stays the same
-    const Datum data = anno_datum.data();
-    const Datum annotation = anno_datum.annotation();
+    const Datum data = ml_datum.data();
+    const Datum label = ml_datum.label();
   vector<int> data_shape = this->InferBlobShape(data);
-  vector<int> annotation_shape(4);
-  annotation_shape[0] = 1;
-  annotation_shape[1] = annotation.channels();
-  annotation_shape[2] = annotation.height();
-  annotation_shape[3] = annotation.width();
+  vector<int> label_shape(4);
+  label_shape[0] = 1;
+  label_shape[1] = label.channels();
+  label_shape[2] = label.height();
+  label_shape[3] = label.width();
 
-  return std::make_tuple(data_shape, annotation_shape);
+  return std::make_tuple(data_shape, label_shape);
 }
 
 
