@@ -40,6 +40,13 @@ message Datum {
   optional bool encoded = 7 [default = false];
 }
 
+// Extension to Datum Message to incorporate arbitrary annotations
+// The annotations are again a datum
+message AnnotatedDatum {
+  optional Datum data = 1;
+  optional Datum annotation = 2;
+}
+
 message FillerParameter {
   // The filler type.
   optional string type = 1 [default = 'constant'];
