@@ -42,9 +42,9 @@ message Datum {
 
 // Extension to Datum Message to incorporate arbitrary annotations
 // The annotations are again a datum
-message AnnotatedDatum {
+message MultilabelDatum {
   optional Datum data = 1;
-  optional Datum annotation = 2;
+  optional Datum label = 2;
 }
 
 message FillerParameter {
