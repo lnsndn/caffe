@@ -106,7 +106,6 @@ class MultilabelDataLayerTest : public MultiDeviceTest<TypeParam> {
 
     for (int iter = 0; iter < 100; ++iter) {
       layer.Forward(blob_bottom_vec_, blob_top_vec_);
-      const Dtype* cpu_data = blob_top_label_->cpu_data();
       for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
           EXPECT_EQ(i+j, blob_top_label_->cpu_data()[i*5 + j]);
@@ -208,7 +207,6 @@ class MultilabelDataLayerTest : public MultiDeviceTest<TypeParam> {
 
     for (int iter = 0; iter < num_inputs; ++iter) {
       layer.Forward(blob_bottom_vec_, blob_top_vec_);
-      const Dtype* cpu_data = blob_top_label_->cpu_data();
       EXPECT_EQ(blob_top_data_->height(), iter % 2 + 1);
       EXPECT_EQ(blob_top_data_->width(), iter % 4 + 1);
       for(int label_dim = 0; label_dim < 5; ++label_dim) {
