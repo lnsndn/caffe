@@ -43,7 +43,12 @@
 .settings
 
 # QtCreator files
-*.user
+*.user*
+caffe
+
+# Build dirs
+build_segnet
+nbproject
 
 # PyCharm files
 .idea
