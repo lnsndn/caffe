@@ -20,9 +20,6 @@ void DropoutLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->gpu_data();
   Dtype* top_data = top[0]->mutable_gpu_data();
   const int count = bottom[0]->count();
-  if (this->phase_ == TEST) {
-    LOG(WARNING) << "!WARNING! Using dropout in test!";
-  }
   unsigned int* mask =
       static_cast<unsigned int*>(rand_vec_.mutable_gpu_data());
   caffe_gpu_rng_uniform(count, mask);
@@ -31,9 +28,6 @@ void DropoutLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   DropoutForward<Dtype><<<CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS>>>(
       count, bottom_data, mask, uint_thres_, scale_, top_data);
   CUDA_POST_KERNEL_CHECK;
-  //} else {
-  //  caffe_copy(count, bottom_data, top_data);
-  //}
 }
 
 template <typename Dtype>
@@ -52,9 +46,6 @@ void DropoutLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   if (propagate_down[0]) {
     const Dtype* top_diff = top[0]->gpu_diff();
     Dtype* bottom_diff = bottom[0]->mutable_gpu_diff();
-    if (this->phase_ == TEST) {
-      LOG(WARNING) << "!WARNING! Using dropout in test!";
-    } 
     const unsigned int* mask =
         static_cast<const unsigned int*>(rand_vec_.gpu_data());
     const int count = bottom[0]->count();
@@ -63,9 +54,6 @@ void DropoutLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
       CAFFE_CUDA_NUM_THREADS>>>(
         count, top_diff, mask, uint_thres_, scale_, bottom_diff);
     CUDA_POST_KERNEL_CHECK;
-    //} else {
-    //  caffe_copy(top[0]->count(), top_diff, bottom_diff);
-    //}
   }
 }
 
