@@ -87,5 +87,7 @@ size_t BlockingQueue<T>::size() const {
 
 template class BlockingQueue<Batch<float>*>;
 template class BlockingQueue<Batch<double>*>;
+template class BlockingQueue<vector<Blob<float>*>*>;
+template class BlockingQueue<vector<Blob<double>*>*>;
 
 }  // namespace caffe

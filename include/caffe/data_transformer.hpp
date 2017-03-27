@@ -107,6 +107,7 @@ class DataTransformer {
    *    Datum containing the data and annotationto be transformed.
    */
   std::tuple<vector<int>, vector<int> > InferBlobShape(const MultilabelDatum& ml_datum);
+  vector<vector<int> > InferBlobShapes(const BlobDatum& datum);
   /**
    * @brief Infers the shape of transformed_blob will have when
    *    the transformation is applied to the data.

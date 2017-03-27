@@ -47,6 +47,14 @@ message MultilabelDatum {
   optional Datum label = 2;
 }
 
+// General Datum using Blob Message for data and any additional labels
+message BlobDatum {
+  optional Datum data = 1;
+  repeated BlobProto label = 2;
+  //each label blob can have a name identifer
+  repeated string label_name = 3;
+}
+
 message FillerParameter {
   // The filler type.
   optional string type = 1 [default = 'constant'];
