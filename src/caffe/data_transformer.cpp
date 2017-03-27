@@ -616,6 +616,31 @@ vector<int> DataTransformer<Dtype>::InferBlobShape(const Datum& datum) {
 }
 
 template<typename Dtype>
+vector<vector<int> > DataTransformer<Dtype>::InferBlobShapes(
+    const BlobDatum& datum) {  
+  vector<vector<int> > shapes;
+
+  // data blob can be subject to transformation,
+  // all others blobs are taken as is
+  vector<int> data_shape = this->InferBlobShape(datum.data());
+  shapes.push_back(data_shape);
+
+  // label blobs
+  vector<int> cur_label_shape;
+  for (int i = 0; i < datum.label_size(); ++i) {
+    const BlobProto cur_label_blob = datum.label(i);
+    int n_dims = cur_label_blob.shape().dim_size();
+    cur_label_shape = vector<int>(n_dims+1);
+    cur_label_shape[0] = 1;
+    for (int j = 0; j < n_dims; ++j) {
+      cur_label_shape[j+1] = cur_label_blob.shape().dim(j);
+    }
+    shapes.push_back(cur_label_shape);
+  }
+  return shapes;
+}
+
+template<typename Dtype>
 std::tuple<vector<int>, vector<int> > DataTransformer<Dtype>::InferBlobShape(
     const MultilabelDatum& ml_datum) {
   // the data shape might be subject to change due to transformation,
