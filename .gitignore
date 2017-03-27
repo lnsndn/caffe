@@ -103,3 +103,7 @@ LOCK
 LOG*
 CURRENT
 MANIFEST-*
+
+# PatRec
+patrec_gpu_machines.txt
+
