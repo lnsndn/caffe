@@ -376,6 +376,16 @@ bp::object NCCL_New_Uid() {
 }
 #endif
 
+vector<int> SolverParameter_TestIter(const SolverParameter& params)
+{
+  vector<int> out(params.test_iter_size());
+  for(int i = 0; i < params.test_iter_size(); ++i)
+  {
+    out[i] = params.test_iter(i);
+  }
+  return out;
+}
+
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(SolveOverloads, Solve, 0, 1);
 
 BOOST_PYTHON_MODULE(_caffe) {
@@ -479,10 +489,43 @@ BOOST_PYTHON_MODULE(_caffe) {
     .add_property("type", bp::make_function(&Layer<Dtype>::type));
   BP_REGISTER_SHARED_PTR_TO_PYTHON(Layer<Dtype>);
 
-  bp::class_<SolverParameter>("SolverParameter", bp::no_init)
+  bp::class_<SolverParameter, shared_ptr<SolverParameter> >("SolverParameter",
+    bp::init<>())
     .add_property("max_iter", &SolverParameter::max_iter)
     .add_property("display", &SolverParameter::display)
-    .add_property("layer_wise_reduce", &SolverParameter::layer_wise_reduce);
+    .add_property("layer_wise_reduce", &SolverParameter::layer_wise_reduce)
+    .add_property("base_lr", &SolverParameter::base_lr)
+    .add_property("momentum", &SolverParameter::momentum)
+    .add_property("gamma", &SolverParameter::gamma)
+    .add_property("test_interval", &SolverParameter::test_interval)
+    .add_property("test_compute_loss", &SolverParameter::test_compute_loss)
+    .add_property("test_initialization", &SolverParameter::test_initialization)
+    .add_property("iter_size", &SolverParameter::iter_size)
+    .add_property("lr_policy", bp::make_function(&SolverParameter::lr_policy,
+        boost::python::return_value_policy<boost::python::copy_const_reference>()))
+    .add_property("power", &SolverParameter::power)
+    .add_property("average_loss", &SolverParameter::average_loss)
+    .add_property("weight_decay", &SolverParameter::weight_decay)
+    .add_property("stepsize", &SolverParameter::stepsize)
+    .add_property("regularization_type", bp::make_function(
+        &SolverParameter::regularization_type, 
+	boost::python::return_value_policy<boost::python::copy_const_reference>()))
+    .add_property("clip_gradients", &SolverParameter::clip_gradients)
+    .add_property("snapshot", &SolverParameter::snapshot)
+    .add_property("snapshot_prefix", bp::make_function(&SolverParameter::snapshot_prefix,
+        boost::python::return_value_policy<boost::python::copy_const_reference>()))
+    .add_property("snapshot_diff", &SolverParameter::snapshot_diff)
+    .add_property("device_id", &SolverParameter::device_id)
+    .add_property("type", bp::make_function(&SolverParameter::type,
+        boost::python::return_value_policy<boost::python::copy_const_reference>()))
+    .add_property("delta", &SolverParameter::delta)
+    .add_property("momentum2", &SolverParameter::momentum2)
+    .add_property("rms_decay", &SolverParameter::rms_decay)
+    .add_property("debug_info", &SolverParameter::debug_info)
+    .add_property("snapshot_after_train", &SolverParameter::snapshot_after_train)
+    .add_property("test_iter", &SolverParameter_TestIter);
+  BP_REGISTER_SHARED_PTR_TO_PYTHON(SolverParameter);
+
   bp::class_<LayerParameter>("LayerParameter", bp::no_init);
 
   bp::class_<Solver<Dtype>, shared_ptr<Solver<Dtype> >, boost::noncopyable>(
@@ -523,6 +566,9 @@ BOOST_PYTHON_MODULE(_caffe) {
         "AdamSolver", bp::init<string>());
 
   bp::def("get_solver", &GetSolverFromFile,
+      bp::return_value_policy<bp::manage_new_object>());
+
+  bp::def("get_solver", &SolverRegistry<Dtype>::CreateSolver,
       bp::return_value_policy<bp::manage_new_object>());
 
   // vector wrappers for all the vector types we use
