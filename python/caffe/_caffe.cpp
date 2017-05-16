@@ -566,7 +566,8 @@ BOOST_PYTHON_MODULE(_caffe) {
     .add_property("param", bp::make_function(&Solver<Dtype>::param,
               bp::return_value_policy<bp::copy_const_reference>()))
     .def("apply_update", &Solver<Dtype>::ApplyUpdate)
-    .def("share_trained_layers", &Solver<Dtype>::ShareTrainedLayers);
+    .def("share_trained_layers", &Solver<Dtype>::ShareTrainedLayers)
+    .def("increment_iter", &Solver<Dtype>::increment_iter);
   BP_REGISTER_SHARED_PTR_TO_PYTHON(Solver<Dtype>);
 
   bp::class_<SGDSolver<Dtype>, bp::bases<Solver<Dtype> >,

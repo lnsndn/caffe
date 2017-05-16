@@ -73,6 +73,7 @@ class Solver {
     return test_nets_;
   }
   int iter() const { return iter_; }
+  void increment_iter() { iter_++; }
 
   // Invoked at specific points during an iteration
   class Callback {
