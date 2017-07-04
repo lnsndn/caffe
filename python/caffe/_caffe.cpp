@@ -134,6 +134,45 @@ shared_ptr<Net<Dtype> > Net_Init(string network_file, int phase,
   return net;
 }
 
+shared_ptr<Net<Dtype> > GetNetFromString(string net_proto_str, int phase,
+    const int level, const bp::object& stages,
+    const bp::object& weights_file) {
+  using google::protobuf::TextFormat;
+  
+// Convert stages from list to vector
+  vector<string> stages_vector;
+  if (!stages.is_none()) {
+    for (int i = 0; i < len(stages); i++) {
+      stages_vector.push_back(bp::extract<string>(stages[i]));
+    }
+  }
+  // load net params from string
+  NetParameter net_param;  
+  bool net_success = TextFormat::ParseFromString(net_proto_str, &net_param);
+  if (!net_success) {
+    LOG(FATAL) << "Malformatted net_proto_str";
+  }
+  net_param.mutable_state()->set_phase(static_cast<Phase>(phase));
+  if (stages_vector.size() != 0) {
+    for (int i = 0; i < stages_vector.size(); i++) {
+      net_param.mutable_state()->add_stage(stages_vector[i]);
+    }
+  }
+  
+  // Initialize net
+  shared_ptr<Net<Dtype> > net(new Net<Dtype>(net_param));
+  // load weight params from string if present
+  if (!weights_file.is_none()) {
+    NetParameter weights_param;
+    bool weights_success = ReadProtoFromBinaryFile(bp::extract<std::string>(weights_file), &weights_param);
+    if (!weights_success) {
+      LOG(FATAL) << "Malformatted weights_proto_str";
+    }
+    net->CopyTrainedLayersFrom(weights_param);
+  }  
+  return net;
+}
+
 // Legacy Net construct-and-load convenience constructor
 shared_ptr<Net<Dtype> > Net_Init_Load(
     string param_file, string pretrained_param_file, int phase) {
@@ -210,16 +249,6 @@ Solver<Dtype>* GetSolverFromString(const string& proto_txt) {
   if (!success)
     LOG(FATAL) << "Malformatted proto_txt string";
   return SolverRegistry<Dtype>::CreateSolver(param);
-}
-
-Net<Dtype>* GetNetFromString(const string& proto_txt, int phase) {
-  using google::protobuf::TextFormat;
-  NetParameter param;
-  bool success = TextFormat::ParseFromString(proto_txt, &param);
-  param.mutable_state()->set_phase(static_cast<Phase>(phase));
-  if (!success)
-    LOG(FATAL) << "Malformatted proto_txt string";
-  return new Net<Dtype>(param);
 }
 
 struct NdarrayConverterGenerator {
@@ -480,6 +509,10 @@ BOOST_PYTHON_MODULE(_caffe) {
     .def("after_backward", &Net_after_backward)
     .def("after_backward", &Net_add_nccl);
   BP_REGISTER_SHARED_PTR_TO_PYTHON(Net<Dtype>);
+  bp::def("get_net_from_string", bp::make_function(&GetNetFromString,
+          bp::default_call_policies(), (bp::arg("network_proto_str"), "phase",
+          bp::arg("level")=0, bp::arg("stages")=bp::object(),
+          bp::arg("weights_file")=bp::object())));
 
   bp::class_<Blob<Dtype>, shared_ptr<Blob<Dtype> >, boost::noncopyable>(
     "Blob", bp::no_init)
@@ -592,10 +625,7 @@ BOOST_PYTHON_MODULE(_caffe) {
   bp::def("get_solver", &GetSolverFromFile,
       bp::return_value_policy<bp::manage_new_object>());
   bp::def("get_solver_from_string", &GetSolverFromString,
-      bp::return_value_policy<bp::manage_new_object>());
-  bp::def("get_net_from_string", &GetNetFromString,
-      bp::return_value_policy<bp::manage_new_object>());
-
+      bp::return_value_policy<bp::manage_new_object>());  
   bp::def("get_solver", &SolverRegistry<Dtype>::CreateSolver,
       bp::return_value_policy<bp::manage_new_object>());
 
