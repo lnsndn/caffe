@@ -27,6 +27,9 @@ void CosineLossLayer<Dtype>::Forward_gpu(
       const Dtype* cur_label_data = label_data + (i*dim + j);
       caffe_gpu_strided_nrm2(channels, cur_inp_data, inner_num_, &len_inp);
       caffe_gpu_strided_nrm2(channels, cur_label_data, inner_num_, &len_label);
+      // add eps to lengths in order to avoid division by zero
+      len_inp += eps_;
+      len_label += eps_;
       caffe_gpu_strided_dot(channels,
                             cur_inp_data, inner_num_,
                             cur_label_data, inner_num_,

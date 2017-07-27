@@ -650,6 +650,8 @@ message CosineLossParameter {
   // from the end (e.g., -1 for the last axis).
   // Any other axes will be evaluated as independent vectors.
   optional int32 axis = 2 [default = 1];
+  // Epsilon for not dividing by zero when computing cosine
+  optional float eps = 3 [default = 1e-9];
 }
 
 message CropParameter {

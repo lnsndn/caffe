@@ -12,6 +12,7 @@ void CosineLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
     LossLayer<Dtype>::LayerSetUp(bottom, top);
     normalization_ = this->layer_param_.loss_param().normalization();
+    eps_ = this->layer_param_.cosine_loss_param().eps();
 }
 
 template <typename Dtype>
@@ -48,7 +49,7 @@ void CosineLossLayer<Dtype>::Forward_cpu(
   // compute lengths and dot products for the current batch
   // as the loss is the mean over all vector angles, we can determine the
   // loss part of the individual vector comparison here also
-  Dtype loss(0.0);
+  Dtype loss(0);
   Dtype len_inp, len_label, dot;
   for (int i = 0; i < outer_num_; ++i) {
     for (int j = 0; j < inner_num_; ++j) {
@@ -56,6 +57,9 @@ void CosineLossLayer<Dtype>::Forward_cpu(
       const Dtype* cur_label_data = label_data + (i*dim + j);
       len_inp = caffe_cpu_strided_nrm2(channels, cur_inp_data, inner_num_);
       len_label = caffe_cpu_strided_nrm2(channels, cur_label_data, inner_num_);
+      // add eps to lengths in order to avoid division by zero
+      len_inp += eps_;
+      len_label += eps_;
       dot = caffe_cpu_strided_dot(channels,
                                   inp_data + (i*dim + j), inner_num_,
                                   label_data + (i*dim + j), inner_num_);
