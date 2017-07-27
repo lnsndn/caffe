@@ -108,6 +108,7 @@ class CosineLossLayer : public LossLayer<Dtype> {
   int outer_num_;
   int inner_num_;
   int cosine_axis_;
+  Dtype eps_;
   /// Caches the dot products.
   Blob<Dtype> dots_;
   /// Caches the lengths of the input vectors.
